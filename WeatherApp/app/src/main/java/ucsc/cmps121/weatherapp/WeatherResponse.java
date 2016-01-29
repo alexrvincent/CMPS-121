@@ -10,6 +10,10 @@ public class WeatherResponse {
 
     @SerializedName("response")
     @Expose
-    public WeatherResponse response;
+    public Response response;
 
+
+    public Response getResponse(){
+        return response;
+    }
 }

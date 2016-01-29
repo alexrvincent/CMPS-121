@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="btn_text">Get Weather Conditions</string>
+    <string name="location">Location:</string>
+    <string name="weather">Current Weather:</string>
+    <string name="temperature">Temperature (F°):</string>
 </resources>

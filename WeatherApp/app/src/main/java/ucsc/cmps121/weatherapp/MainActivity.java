@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import okhttp3.OkHttpClient;
@@ -15,12 +16,20 @@ import retrofit2.http.Query;
 public class MainActivity extends AppCompatActivity {
 
     private String result;
-
+    private WeatherService service;
+    private TextView location;
+    private TextView weather;
+    private TextView temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /* Link UI Elements */
+        location = (TextView) findViewById(R.id.location_content);
+        weather = (TextView) findViewById(R.id.weather_content);
+        temp = (TextView) findViewById(R.id.temp_content);
 
         /* Logging */
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -38,8 +47,11 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         /* Create a service that implements WeatherService API */
-        WeatherService service = retrofit.create(WeatherService.class);
+       service = retrofit.create(WeatherService.class);
 
+    }
+
+    public void fetchWeather(View v){
         Call<WeatherResponse> queryWeatherFetch =
                 service.weatherFetch(result);
 
@@ -48,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(retrofit2.Response<WeatherResponse> response) {
                 Log.i("WeatherAppLog", "Code: " + response.code());
                 Log.i("WeatherAppLog", "The result is: " + response.body().response);
+                Toast.makeText(MainActivity.this, response.body().getResponse().getResult(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -56,11 +69,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void fetchWeather(View v){
 
     }
+
 
     /* Custom API Service Using Callback */
     public interface WeatherService {

@@ -13,4 +13,7 @@ public class Response {
     @SerializedName("result")
     @Expose
     public String result;
+    public String getResult(){
+        return result;
+    }
 }
