@@ -4,4 +4,6 @@
     <string name="location">Location:</string>
     <string name="weather">Current Weather:</string>
     <string name="temperature">Temperature (F°):</string>
+    <string name="humidity">Humidity:</string>
+    <string name="wind_speeds">Wind Speed:</string>
 </resources>

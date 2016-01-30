@@ -13,7 +13,10 @@ public class Response {
     @SerializedName("result")
     @Expose
     public String result;
-    public String getResult(){
-        return result;
-    }
+
+    /* Getters */
+    public Conditions getConditions(){ return conditions; }
+    public String getResult(){ return result; }
+
+
 }

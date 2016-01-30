@@ -44,4 +44,28 @@ public class Conditions {
     @SerializedName("wind_mph")
     @Expose
     public Double windMph;
+
+    public Integer getWindGustMph() { return windGustMph;}
+
+    public Double getTempF() { return tempF; }
+
+    public ObservationLocation getObservationLocation() { return observationLocation; }
+
+    public Double getTempC() { return tempC; }
+
+    public String getRelativeHumidity() { return relativeHumidity; }
+
+    public String getWeather() { return weather; }
+
+    public Integer getDewpointC() { return dewpointC; }
+
+    public String getWindchillC() { return windchillC; }
+
+    public String getPressureMb() { return pressureMb; }
+
+    public String getWindchillF() { return windchillF; }
+
+    public Integer getDewpointF() { return dewpointF; }
+
+    public Double getWindMph() { return windMph; }
 }

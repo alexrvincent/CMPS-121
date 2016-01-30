@@ -32,4 +32,20 @@ public class ObservationLocation {
     @Expose
     public String latitude;
 
+    public String getLatitude() { return latitude; }
+
+    public String getCity() { return city; }
+
+    public String getFull() { return full; }
+
+    public String getElevation() { return elevation; }
+
+    public String getCountry() { return country; }
+
+    public String getLongitude() { return longitude; }
+
+    public String getState() { return state; }
+
+    public String getCountryIso3166() { return countryIso3166; }
+
 }

@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.*;
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView location;
     private TextView weather;
     private TextView temp;
+    private TextView humidity;
+    private TextView ws;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         location = (TextView) findViewById(R.id.location_content);
         weather = (TextView) findViewById(R.id.weather_content);
         temp = (TextView) findViewById(R.id.temp_content);
+        humidity = (TextView) findViewById(R.id.humidity_content);
+        ws = (TextView) findViewById(R.id.ws_content);
 
         /* Logging */
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -58,9 +64,28 @@ public class MainActivity extends AppCompatActivity {
         queryWeatherFetch.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(retrofit2.Response<WeatherResponse> response) {
+
                 Log.i("WeatherAppLog", "Code: " + response.code());
-                Log.i("WeatherAppLog", "The result is: " + response.body().response);
-                Toast.makeText(MainActivity.this, response.body().getResponse().getResult(), Toast.LENGTH_SHORT).show();
+                // Case: Unknown Server Error Code
+                if(response.body() == null || (response.code() != 200)){
+                    Toast.makeText(MainActivity.this, "Server Error. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+                // Case: Server request returns code 200, but with error field
+                else if(response.body().getResponse().getResult().equals("error")){
+                    Toast.makeText(MainActivity.this, "Application Error. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+                // Case: Successful call and fetch of request
+                else if (response.body().getResponse().getResult().equals("ok")){
+                    location.setText(response.body().getResponse().getConditions().getObservationLocation().getCity() +
+                            "\n" + "Elevation: " + response.body().getResponse().getConditions().getObservationLocation().getElevation());
+                    weather.setText(response.body().getResponse().getConditions().getWeather());
+                    temp.setText(response.body().getResponse().getConditions().getTempF().toString());
+                    humidity.setText(response.body().getResponse().getConditions().getRelativeHumidity());
+                    ws.setText("Average: " + response.body().getResponse().getConditions().getWindMph()+
+                                "\nGusts: " + response.body().getResponse().getConditions().getWindGustMph());
+                    //Log.i("WeatherAppLog", "Code: " + response.code());
+                    Log.i("WeatherAppLog", "The result is: " + response.body().response.getResult());
+                }
             }
 
             @Override
