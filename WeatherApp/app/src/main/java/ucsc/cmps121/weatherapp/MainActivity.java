@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         humidity = (TextView) findViewById(R.id.humidity_content);
         ws = (TextView) findViewById(R.id.ws_content);
 
-        /* Logging */
+        /* Request Debug Logging */
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY); //Set Desired Log Level
         OkHttpClient httpClient = new OkHttpClient.Builder()
@@ -57,16 +57,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /* OnClick for Button, makes a GET call and updates corresponding TextViews */
     public void fetchWeather(View v){
+        /* Make the GET call */
         Call<WeatherResponse> queryWeatherFetch =
                 service.weatherFetch(result);
 
+        /* Enqueue the call on a callback, handle responses */
         queryWeatherFetch.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(retrofit2.Response<WeatherResponse> response) {
 
                 Log.i("WeatherAppLog", "Code: " + response.code());
-                // Case: Unknown Server Error Code
+                // Case: Unknown Server Error Code 500
                 if(response.body() == null || (response.code() != 200)){
                     Toast.makeText(MainActivity.this, "Server Error. Please try again.", Toast.LENGTH_SHORT).show();
                 }

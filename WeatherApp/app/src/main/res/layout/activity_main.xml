@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
+                android:text="No Location Selected"
                 android:id="@+id/location_content"
                 android:padding="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
+                android:text="No Weather Found"
                 android:id="@+id/weather_content"
                 android:padding="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
+                android:text="No Temperature Found"
                 android:id="@+id/temp_content"
                 android:padding="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
+                android:text="No Humidity Found"
                 android:id="@+id/humidity_content"
                 android:padding="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
+                android:text="No Wind Speed Found"
                 android:id="@+id/ws_content"
                 android:padding="10dp"
                 android:layout_gravity="center_horizontal" />
