@@ -2,4 +2,6 @@
     <string name="app_name">ChatApp</string>
     <string name="greetings">Enter a Nickname</string>
     <string name="chat_btn">Start Chat</string>
+    <string name="chat_send">SEND</string>
+    <string name="chat_hint">Message the group</string>
 </resources>
