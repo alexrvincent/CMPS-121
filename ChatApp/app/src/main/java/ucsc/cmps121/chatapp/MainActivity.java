@@ -217,9 +217,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void printLocation(View v){
-        Toast.makeText(MainActivity.this, ""+locationData.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
-    }
 
     /* Listens to the location, and gets the most precise recent location */
     LocationListener locationListener = new LocationListener() {

@@ -22,15 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/messageList"
-        android:layout_below="@+id/chattingAs"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/sendBox" >
+        android:layout_below="@+id/chattingAs"
+        android:layout_above="@+id/sendBox">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/messageListContainer"></LinearLayout>
     </ScrollView>
 
@@ -46,26 +46,33 @@
 
         <EditText
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/chatInput"
-            android:layout_weight="0.32"
+            android:layout_weight="0.44"
             android:hint="@string/chat_hint"
             android:inputType="text" />
 
-        <Button
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/chat_send"
-            android:id="@+id/send_btn"
-            android:onClick="sendMessage"/>
+            android:layout_height="wrap_content">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/refresh_text"
-            android:id="@+id/refresh_btn"
-            android:onClick="fetchMessages"/>
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/refresh_text"
+                android:id="@+id/refresh_btn"
+                android:onClick="fetchMessages"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_send"
+                android:id="@+id/send_btn"
+                android:onClick="sendMessage"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

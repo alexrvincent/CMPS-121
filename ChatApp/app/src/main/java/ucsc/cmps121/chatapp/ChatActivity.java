@@ -14,6 +14,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Random;
 
 import okhttp3.OkHttpClient;
@@ -107,11 +108,11 @@ public class ChatActivity extends AppCompatActivity {
         String message = chatInput.getText().toString();
         Toast.makeText(ChatActivity.this, "Send: "+message+" with user_id "+caughtUserId, Toast.LENGTH_SHORT).show();
         chatInput.setText("");
-        addNewMessageToChat(message);
+        addUserMessageToChat(message);
         postMessage(message, generateId());
     }
 
-    public void addNewMessageToChat(String message){
+    public void addNewMessageToChat(String message, String nickname){
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View v = inflater.inflate(R.layout.activity_chat, null);
@@ -119,9 +120,21 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayout ll = (LinearLayout) findViewById(R.id.messageListContainer);
 
         TextView tv = new TextView(this);
-        tv.setText(message);
+        tv.setText(nickname+" said: " +message);
         ll.addView(tv);
 
+    }
+
+    public void addUserMessageToChat(String message){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View v = inflater.inflate(R.layout.activity_chat, null);
+        ScrollView sv = (ScrollView) v.findViewById(R.id.messageList);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.messageListContainer);
+
+        TextView tv = new TextView(this);
+        tv.setText(caughtUsername+ " said: "+message);
+        ll.addView(tv);
     }
 
     public void fetchMessages(View v){
@@ -148,6 +161,10 @@ public class ChatActivity extends AppCompatActivity {
                 // Case: Successful call and fetch of request
                 else if (response.body().getResult().equals("ok")) {
                     Log.i("WeatherAppLog", "The result is: " + response.body().getResult());
+                    List<ResultList> rL = response.body().getResultList();
+                    for(int i = 0; i < rL.size(); ++i){
+                        addNewMessageToChat(rL.get(i).getMessage(), rL.get(i).getNickname());
+                    }
                 }
 
             }

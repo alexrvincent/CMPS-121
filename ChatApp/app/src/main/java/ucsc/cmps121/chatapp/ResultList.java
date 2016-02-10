@@ -31,4 +31,24 @@ public class ResultList {
     @Expose
     public String userId;
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
 }
