@@ -184,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void startChat(View v) {
 
+        if(locationData.getLocation() == null) {
+            Toast.makeText(MainActivity.this, "Please enable location permissions in this device's settings", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(this, ChatActivity.class);
 
         //Put the user_id in the extra

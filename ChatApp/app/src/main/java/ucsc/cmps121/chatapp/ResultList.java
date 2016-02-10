@@ -23,13 +23,13 @@ public class ResultList {
     @Expose
     public String nickname;
 
-    @SerializedName("messageId")
+    @SerializedName("message_id")
     @Expose
-    public String messageId;
+    public String message_id;
 
-    @SerializedName("userID")
+    @SerializedName("user_id")
     @Expose
-    public String userId;
+    public String user_id;
 
     public String getTimestamp() {
         return timestamp;
@@ -44,11 +44,11 @@ public class ResultList {
     }
 
     public String getMessageId() {
-        return messageId;
+        return message_id;
     }
 
     public String getUserId() {
-        return userId;
+        return user_id;
     }
 
 }

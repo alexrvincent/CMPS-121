@@ -18,6 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <!--
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +33,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/messageListContainer"></LinearLayout>
-    </ScrollView>
+    </ScrollView> -->
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_above="@+id/sendBox"
+        android:layout_below="@+id/chattingAs" />
 
     <LinearLayout
         android:orientation="horizontal"

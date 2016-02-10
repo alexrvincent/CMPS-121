@@ -10,10 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -31,20 +33,21 @@ import retrofit2.http.Query;
 public class ChatActivity extends AppCompatActivity {
 
     private LocationData locationData = LocationData.getLocationData();
-
     private String result;
     public static String BASE_URL = "https://luca-teaching.appspot.com/localmessages/";
     private static final String STRING_LIST =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final int RANDOM_STRING_LENGTH = 8;
     private MessageService service;
-
     private String caughtUsername;
     private String caughtUserId;
     public TextView chattingAs;
     public EditText chatInput;
     public Button sendButton;
     public Button refreshButton;
+
+    private MessageAdapter aa;
+    private ArrayList<MessageElement> aList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,12 @@ public class ChatActivity extends AppCompatActivity {
         chatInput = (EditText) findViewById(R.id.chatInput);
         sendButton = (Button) findViewById(R.id.send_btn);
         refreshButton = (Button) findViewById(R.id.refresh_btn);
+
+        aList = new ArrayList<MessageElement>();
+        aa = new MessageAdapter(this, R.layout.message_element, aList);
+        ListView myListView = (ListView) findViewById(R.id.listView);
+        myListView.setAdapter(aa);
+        aa.notifyDataSetChanged();
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -105,15 +114,21 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View v) {
+
+        if(locationData.getLocation() == null) {
+            Toast.makeText(ChatActivity.this, "Please enable location permissions in this device's settings", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String message = chatInput.getText().toString();
-        Toast.makeText(ChatActivity.this, "Send: "+message+" with user_id "+caughtUserId, Toast.LENGTH_SHORT).show();
         chatInput.setText("");
-        addUserMessageToChat(message);
+        //addUserMessageToChat(message);
         postMessage(message, generateId());
+
     }
 
-    public void addNewMessageToChat(String message, String nickname){
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public void addNewMessageToChat(String message, String nickname, String user_id){
+        /*LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View v = inflater.inflate(R.layout.activity_chat, null);
         ScrollView sv = (ScrollView) v.findViewById(R.id.messageList);
@@ -121,11 +136,13 @@ public class ChatActivity extends AppCompatActivity {
 
         TextView tv = new TextView(this);
         tv.setText(nickname+" said: " +message);
-        ll.addView(tv);
+        ll.addView(tv);*/
+
+
 
     }
 
-    public void addUserMessageToChat(String message){
+    /*public void addUserMessageToChat(String message){
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View v = inflater.inflate(R.layout.activity_chat, null);
@@ -135,9 +152,14 @@ public class ChatActivity extends AppCompatActivity {
         TextView tv = new TextView(this);
         tv.setText(caughtUsername+ " said: "+message);
         ll.addView(tv);
-    }
+    }*/
 
     public void fetchMessages(View v){
+
+        if(locationData.getLocation() == null) {
+            Toast.makeText(ChatActivity.this, "Please enable location permissions in this device's settings", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         float lat = (float) locationData.getLocation().getLatitude();
         float lng = (float) locationData.getLocation().getLongitude();
@@ -162,9 +184,19 @@ public class ChatActivity extends AppCompatActivity {
                 else if (response.body().getResult().equals("ok")) {
                     Log.i("WeatherAppLog", "The result is: " + response.body().getResult());
                     List<ResultList> rL = response.body().getResultList();
-                    for(int i = 0; i < rL.size(); ++i){
-                        addNewMessageToChat(rL.get(i).getMessage(), rL.get(i).getNickname());
+                    aList.clear();
+                    for(int i = rL.size()-1 ; i > -1; --i){
+                        //addNewMessageToChat(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId());
+                            //Log.i("Chat Activity", caughtUserId);
+                            //Log.i("Chat Activity", rL.get(i).userId.toString());
+                        if(caughtUserId.equals(rL.get(i).getUserId())) {
+                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname()+ " (You)", rL.get(i).getUserId()));
+                        }
+                        else aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId()));
                     }
+                    if(rL.size() == 0)
+                        Toast.makeText(ChatActivity.this, "No new messages to retrieve", Toast.LENGTH_SHORT).show();
+                    aa.notifyDataSetChanged();
                 }
 
             }
@@ -176,11 +208,11 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    public void postMessage(String message, String message_id){
+    public void postMessage(final String message, final String message_id){
         float lat = (float) locationData.getLocation().getLatitude();
         float lng = (float) locationData.getLocation().getLongitude();
         String user_id = caughtUserId;
-        String nickname = caughtUsername;
+        final String nickname = caughtUsername;
 
         /* Make the POST call */
         Call<MessageResponse> queryMessagePost = service.messagePost(lat,lng, user_id, nickname, message, message_id);
@@ -189,6 +221,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<MessageResponse> response) {
                 Log.i("MessageAppLog", "onResponse called for messagePost");
+                aList.add(new MessageElement(message, nickname + " (You)", message_id));
+                aa.notifyDataSetChanged();
             }
 
             @Override
