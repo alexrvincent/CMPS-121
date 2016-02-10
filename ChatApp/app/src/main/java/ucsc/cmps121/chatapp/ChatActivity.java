@@ -14,6 +14,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -22,20 +24,26 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private String result;
-    public static String BASE_URL = "https://luca-teaching.appspot.com/";
-    private MessageService service;
+    private LocationData locationData = LocationData.getLocationData();
 
+    private String result;
+    public static String BASE_URL = "https://luca-teaching.appspot.com/localmessages/";
+    private static final String STRING_LIST =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    private static final int RANDOM_STRING_LENGTH = 8;
+    private MessageService service;
 
     private String caughtUsername;
     private String caughtUserId;
     public TextView chattingAs;
     public EditText chatInput;
     public Button sendButton;
+    public Button refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         chattingAs = (TextView) findViewById(R.id.chattingAs);
         chatInput = (EditText) findViewById(R.id.chatInput);
         sendButton = (Button) findViewById(R.id.send_btn);
+        refreshButton = (Button) findViewById(R.id.refresh_btn);
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -73,11 +82,33 @@ public class ChatActivity extends AppCompatActivity {
         service = retrofit.create(MessageService.class);
     }
 
+    private String generateId(){
+        StringBuffer randomString = new StringBuffer();
+        for(int i =0; i<RANDOM_STRING_LENGTH; ++i){
+            int number = getRandomNumber();
+            char ch = STRING_LIST.charAt(number);
+            randomString.append(ch);
+        }
+        return randomString.toString();
+    }
+
+    private int getRandomNumber(){
+        int randomInt;
+        Random randomGenerator = new Random();
+        randomInt = randomGenerator.nextInt(STRING_LIST.length());
+        if (randomInt - 1 == -1) {
+            return randomInt;
+        } else {
+            return randomInt - 1;
+        }
+    }
+
     public void sendMessage(View v) {
         String message = chatInput.getText().toString();
         Toast.makeText(ChatActivity.this, "Send: "+message+" with user_id "+caughtUserId, Toast.LENGTH_SHORT).show();
         chatInput.setText("");
         addNewMessageToChat(message);
+        postMessage(message, generateId());
     }
 
     public void addNewMessageToChat(String message){
@@ -94,8 +125,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void fetchMessages(View v){
+
+        float lat = (float) locationData.getLocation().getLatitude();
+        float lng = (float) locationData.getLocation().getLongitude();
+
         /* Make the GET call */
-        Call<MessageResponse> queryMessageFetch = service.messageFetch(result);
+        Call<MessageResponse> queryMessageFetch = service.messageFetch(lat,lng,caughtUserId);
 
         /* Enqueue the call on a callback, handle responses */
         queryMessageFetch.enqueue(new Callback<MessageResponse>() {
@@ -103,15 +138,15 @@ public class ChatActivity extends AppCompatActivity {
             public void onResponse(Response<MessageResponse> response) {
                 Log.i("MessageAppLog", "Code: " + response.code());
                 // Case: Unknown Server Error Code 500
-                if(response.body() == null || (response.code() != 200)){
+                if (response.body() == null || (response.code() != 200)) {
                     Toast.makeText(ChatActivity.this, "Server Error. Please try again.", Toast.LENGTH_SHORT).show();
                 }
                 // Case: Server request returns code 200, but with error field
-                else if(response.body().getResult().equals("error")){
+                else if (response.body().getResult().equals("error")) {
                     Toast.makeText(ChatActivity.this, "Application Error. Please try again.", Toast.LENGTH_SHORT).show();
                 }
                 // Case: Successful call and fetch of request
-                else if (response.body().getResult().equals("ok")){
+                else if (response.body().getResult().equals("ok")) {
                     Log.i("WeatherAppLog", "The result is: " + response.body().getResult());
                 }
 
@@ -124,10 +159,43 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    public void postMessage(String message, String message_id){
+        float lat = (float) locationData.getLocation().getLatitude();
+        float lng = (float) locationData.getLocation().getLongitude();
+        String user_id = caughtUserId;
+        String nickname = caughtUsername;
+
+        /* Make the POST call */
+        Call<MessageResponse> queryMessagePost = service.messagePost(lat,lng, user_id, nickname, message, message_id);
+
+        queryMessagePost.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Response<MessageResponse> response) {
+                Log.i("MessageAppLog", "onResponse called for messagePost");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.i("MessageAppLog", "onFailure called for MessagePost");
+            }
+        });
+
+    }
+
 
     public interface MessageService {
-        @GET("/localmessages/default/get_messages")
+        @GET("default/get_messages")
         Call<MessageResponse> messageFetch(
-                @Query("result") String result);
+                @Query("lat") float lat,
+                @Query("lng") float lng,
+                @Query("user_id") String user_id);
+        @POST("default/post_message")
+        Call<MessageResponse> messagePost(
+                @Query("lat") float lat,
+                @Query("lng") float lng,
+                @Query("user_id") String user_id,
+                @Query("nickname") String nickname,
+                @Query("message") String message,
+                @Query("message_id") String message_id);
     }
 }

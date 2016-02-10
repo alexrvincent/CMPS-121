@@ -27,16 +27,14 @@ public class MainActivity extends AppCompatActivity {
 
     public EditText username;
     public Button start_chat;
+    public Button my_location;
     public String user_id;
-
     public static String BASE_URL = "https://luca-teaching.appspot.com/localmessages/default/";
     private static final String STRING_LIST =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final int RANDOM_STRING_LENGTH = 8;
-
     public LocationData locationData = LocationData.getLocationData();
-    double longitude = 0.0;
-    double latitude = 0.0;
+    //public Location myLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("user_id", user_id);
             editor.commit();
         }
-
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -72,14 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 checkForUsername();
             }
         });
-
         checkForUsername();
-
-        //locationData = LocationData.getLocationData();
-        //requestLocationUpdate();
-        //latitude = locationData.getLocation().getLatitude();
-        //longitude = locationData.getLocation().getLongitude();
-
 
     }
 
@@ -92,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             start_chat.setEnabled(false);
+            checkForUsername();
             Log.i("MainActivity", "location allowed was false, disable start_chat");
         }
         render();
@@ -105,19 +96,14 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-
-    /*
-	Check users location sharing setting
-	 */
+    /* Check users location sharing setting */
     private boolean checkLocationAllowed(){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = settings.edit();
         return settings.getBoolean("location_allowed", false);
     }
 
-    /*
-    Persist users location sharing setting
-     */
+    /* Persist users location sharing setting */
     private void setLocationAllowed(boolean allowed){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = settings.edit();
@@ -125,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    /*
-	Set the button text between "Enable Location" or "Disable Location"
-	 */
+    /* Set the button text between "Enable Location" or "Disable Location" */
     private void render(){
         Boolean locationAllowed = checkLocationAllowed();
         Button button = (Button) findViewById(R.id.location_button);
@@ -141,9 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /*
-	Request location update. This must be called in onResume if the user has allowed location sharing
-	 */
+    /* Request location update. This must be called in onResume if the user has allowed location sharing */
     private void requestLocationUpdate(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
@@ -158,9 +140,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    Remove location update. This must be called in onPause if the user has allowed location sharing
-     */
+    /* Remove location update. This must be called in onPause if the user has allowed location sharing */
     private void removeLocationUpdate() {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
@@ -183,13 +163,15 @@ public class MainActivity extends AppCompatActivity {
             //disable it
             removeLocationUpdate();
             setLocationAllowed(false);//persist this setting
-            start_chat.setEnabled(false);//now that we cannot use location, we should disable search facility
+            checkForUsername();
 
         } else {
             //enable it
             requestLocationUpdate();
             setLocationAllowed(true);//persist this setting
+            checkForUsername();
         }
+        render();
     }
 
     public void checkForUsername(){
@@ -198,12 +180,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else start_chat.setEnabled(false);
 
-        Log.i("MainActivity", Double.toString(latitude));
-        Log.i("MainActivity", Double.toString(longitude));
-
     }
 
-    // PRE-CONDITION: HAVE LATITUDE, LONGITUDE, NON-EMPTY STRING
     public void startChat(View v) {
 
         Intent intent = new Intent(this, ChatActivity.class);
@@ -239,10 +217,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Listens to the location, and gets the most precise recent location.
-     * Copied from Prof. Luca class code
-     */
+    public void printLocation(View v){
+        Toast.makeText(MainActivity.this, ""+locationData.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
+    }
+
+    /* Listens to the location, and gets the most precise recent location */
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -263,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 //Now we have the location.
                 if(checkLocationAllowed())
                     start_chat.setEnabled(true);//We must enable search button
+                    checkForUsername();
             }
         }
 
