@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public Button start_chat;
     public Button my_location;
     public String user_id;
+    public String nickname;
     public static String BASE_URL = "https://luca-teaching.appspot.com/localmessages/default/";
     private static final String STRING_LIST =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -46,13 +47,33 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = getSharedPreferences("appinfo", Context.MODE_PRIVATE );
         SharedPreferences.Editor editor = sp.edit();
+
+        /*Get the user id from Shared Preferences*/
         user_id = sp.getString("user_id", null);
+
+        /* If it's not available, make a new one and store it */
         if (user_id == null) {
-            Toast.makeText(MainActivity.this, "user id was null, make a new one", Toast.LENGTH_SHORT).show();
             user_id = generateId();
             editor.putString("user_id", user_id);
+            Log.i("MainActivity", "First time load: Made a new user_id!");
             editor.commit();
         }
+
+        /* Get the nickname from Shared Preferences */
+        nickname = sp.getString("nickname", null);
+
+        /* If it's not available, set an empty one */
+        if(nickname == null) {
+            nickname = "";
+            editor.putString("nickname", nickname);
+            Log.i("MainActivity", "First time load: Made a new nickname!");
+            editor.commit();
+        }
+
+        /* Set the last used nickname (or first used) to the EditText */
+        username.setText(nickname);
+
+        /* Continously check for input on the EditText to enable the Chat Button*/
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -184,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startChat(View v) {
 
+        /* Check to make sure we have the location */
         if(locationData.getLocation() == null) {
             Toast.makeText(MainActivity.this, "Please enable location permissions in this device's settings", Toast.LENGTH_SHORT).show();
             return;
@@ -191,10 +213,16 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ChatActivity.class);
 
+        /* Store the current nickname in SharedPrefences */
+        SharedPreferences sp = getSharedPreferences("appinfo", Context.MODE_PRIVATE );
+        SharedPreferences.Editor editor = sp.edit();
+        String newNickname = username.getText().toString();
+        editor.putString("nickname", newNickname);
+        Log.i("MainActivity", "Put new nickname: "+ newNickname + " into SharedPrefences");
+        editor.commit();
+
         //Put the user_id in the extra
         intent.putExtra("user_id", user_id);
-
-        //Grab Latitude/Longitude and put into extra
 
         //Grab username and put it in an extra
         intent.putExtra("USERNAME", username.getText().toString());

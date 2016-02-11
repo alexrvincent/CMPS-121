@@ -44,12 +44,19 @@ public class MessageAdapter extends ArrayAdapter<MessageElement>{
             newView = (LinearLayout) convertView;
         }
 
+
         /*Fill in the View*/
         TextView msg_tv = (TextView) newView.findViewById(R.id.new_message);
         TextView nn_tv = (TextView) newView.findViewById(R.id.new_nickname);
 
+        //LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) msg_tv.getLayoutParams();
+
+
         msg_tv.setText(w.message);
         nn_tv.setText(w.nickname);
+
+        //msg_tv.setLayoutParams(params);
+
 
         return newView;
     }
