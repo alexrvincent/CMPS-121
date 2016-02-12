@@ -8,13 +8,14 @@ public class MessageElement {
     public String message;
     public String nickname;
     public String user_id;
+    public Boolean isMe;
 
     MessageElement() {};
 
-    MessageElement(String msg, String nn, String id){
+    MessageElement(String msg, String nn, String id, Boolean isUser){
         message = msg;
         nickname = nn;
         user_id = id;
-
+        isMe = isUser;
     }
 }

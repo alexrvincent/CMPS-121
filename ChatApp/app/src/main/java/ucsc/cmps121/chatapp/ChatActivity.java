@@ -184,9 +184,9 @@ public class ChatActivity extends AppCompatActivity {
                         //Log.i("Chat Activity", caughtUserId);
                         //Log.i("Chat Activity", rL.get(i).userId.toString());
                         if (caughtUserId.equals(rL.get(i).getUserId())) {
-                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname() + " (You)", rL.get(i).getUserId()));
+                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname() + " (You)", rL.get(i).getUserId(), true));
                         } else
-                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId()));
+                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId(), false));
                     }
                     if (rL.size() == 0)
                         Toast.makeText(ChatActivity.this, "No new messages to retrieve", Toast.LENGTH_SHORT).show();
@@ -272,7 +272,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<MessageResponse> response) {
                 Log.i("MessageAppLog", "onResponse called for messagePost");
-                aList.add(new MessageElement(message, nickname + " (You)", message_id));
+                aList.add(new MessageElement(message, nickname + " (You)", message_id, true));
                 aa.notifyDataSetChanged();
             }
 
