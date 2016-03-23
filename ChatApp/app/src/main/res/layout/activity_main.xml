@@ -9,44 +9,60 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ucsc.cmps121.chatapp.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/greetings"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="118dp"
-        android:id="@+id/greetings"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/username"
-        android:layout_below="@+id/greetings"
-        android:layout_marginTop="29dp"
-        android:layout_alignLeft="@+id/greetings"
-        android:layout_alignStart="@+id/greetings"
-        android:layout_alignRight="@+id/greetings"
-        android:layout_alignEnd="@+id/greetings" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chat_btn"
-        android:id="@+id/button"
-        android:layout_marginTop="38dp"
-        android:layout_below="@+id/username"
-        android:layout_alignRight="@+id/username"
-        android:layout_alignEnd="@+id/username"
-        android:onClick="startChat"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/greetings"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="118dp"
+                android:id="@+id/greetings"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/location_button"
-        android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:onClick="toggleLocation"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/username"
+                android:layout_below="@+id/greetings"
+                android:layout_marginTop="29dp"
+                android:layout_alignLeft="@+id/greetings"
+                android:layout_alignStart="@+id/greetings"
+                android:layout_alignRight="@+id/greetings"
+                android:layout_alignEnd="@+id/greetings" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_btn"
+                android:id="@+id/button"
+                android:layout_marginTop="38dp"
+                android:layout_below="@+id/username"
+                android:layout_alignRight="@+id/username"
+                android:layout_alignEnd="@+id/username"
+                android:onClick="startChat"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Button"
+                android:id="@+id/location_button"
+                android:layout_below="@+id/button"
+                android:layout_centerHorizontal="true"
+                android:onClick="toggleLocation"/>
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
 
 </RelativeLayout>

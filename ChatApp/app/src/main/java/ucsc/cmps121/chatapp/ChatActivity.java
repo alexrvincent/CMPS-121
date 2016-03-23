@@ -119,8 +119,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
-
     private String generateId(){
         StringBuffer randomString = new StringBuffer();
         for(int i =0; i<RANDOM_STRING_LENGTH; ++i){
@@ -180,9 +178,6 @@ public class ChatActivity extends AppCompatActivity {
                     List<ResultList> rL = response.body().getResultList();
                     aList.clear();
                     for (int i = rL.size() - 1; i > -1; --i) {
-                        //addNewMessageToChat(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId());
-                        //Log.i("Chat Activity", caughtUserId);
-                        //Log.i("Chat Activity", rL.get(i).userId.toString());
                         if (caughtUserId.equals(rL.get(i).getUserId())) {
                             aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname() + " (You)", rL.get(i).getUserId(), true));
                         } else
@@ -202,61 +197,13 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-
     public void fetchMessages(View v){
 
         if(locationData.getLocation() == null) {
             Toast.makeText(ChatActivity.this, "Please enable location permissions in this device's settings", Toast.LENGTH_SHORT).show();
             return;
         }
-
         retrieveMessage();
-
-        /*float lat = (float) locationData.getLocation().getLatitude();
-        float lng = (float) locationData.getLocation().getLongitude();
-
-        /* Make the GET call
-        Call<MessageResponse> queryMessageFetch = service.messageFetch(lat,lng,caughtUserId);
-
-        /* Enqueue the call on a callback, handle responses
-        queryMessageFetch.enqueue(new Callback<MessageResponse>() {
-            @Override
-            public void onResponse(Response<MessageResponse> response) {
-                Log.i("MessageAppLog", "Code: " + response.code());
-                // Case: Unknown Server Error Code 500
-                if (response.body() == null || (response.code() != 200)) {
-                    Toast.makeText(ChatActivity.this, "Server Error. Please try again.", Toast.LENGTH_SHORT).show();
-                }
-                // Case: Server request returns code 200, but with error field
-                else if (response.body().getResult().equals("error")) {
-                    Toast.makeText(ChatActivity.this, "Application Error. Please try again.", Toast.LENGTH_SHORT).show();
-                }
-                // Case: Successful call and fetch of request
-                else if (response.body().getResult().equals("ok")) {
-                    Log.i("WeatherAppLog", "The result is: " + response.body().getResult());
-                    List<ResultList> rL = response.body().getResultList();
-                    aList.clear();
-                    for(int i = rL.size()-1 ; i > -1; --i){
-                        //addNewMessageToChat(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId());
-                            //Log.i("Chat Activity", caughtUserId);
-                            //Log.i("Chat Activity", rL.get(i).userId.toString());
-                        if(caughtUserId.equals(rL.get(i).getUserId())) {
-                            aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname()+ " (You)", rL.get(i).getUserId()));
-                        }
-                        else aList.add(new MessageElement(rL.get(i).getMessage(), rL.get(i).getNickname(), rL.get(i).getUserId()));
-                    }
-                    if(rL.size() == 0)
-                        Toast.makeText(ChatActivity.this, "No new messages to retrieve", Toast.LENGTH_SHORT).show();
-                    aa.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.i("MessageAppLog", "onFailure called");
-            }
-        }); */
     }
 
     public void postMessage(final String message, final String message_id){
@@ -283,7 +230,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
-
 
     public interface MessageService {
         @GET("default/get_messages")
